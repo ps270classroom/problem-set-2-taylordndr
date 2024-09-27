@@ -45,8 +45,7 @@ Use `dplyr` functions to create a table with the number of candidates in each ty
 ## Answer 1
 
 ```{r}
-fb_ads <- read_csv("data/fb_ads.csv")
-fb_ads
+fb_ads <- read.csv("data/fb_ads.csv")
 ```
 
 There are 7,041 political candidates in this data set. 
