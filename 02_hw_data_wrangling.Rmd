@@ -2,9 +2,9 @@
 title: 'Problem Set 2: Data Wrangling'
 author: "Taylor D'Andrea"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r setup, include = FALSE}
@@ -36,7 +36,7 @@ Political advertising has traditionally been focused on the medium of television
 
 ## Question 1 (8 points)
 
-Load the data using the `read_csv` function and save it as `fb_ads` (using this will automatically make `fb_ads` a tibble). In the text, describe how many candidates there are in the dataset. 
+Load the data using the `read_csv` function and save it as `fb_ads` (using this will automatically make `fb_ads` a tibble). In the text, describe how many candidates there are in the data set. 
 
 Use `dplyr` functions to create a table with the number of candidates in each type of incumbency status in the data set. Save this table output as `incumbency_table` (for the autograder). Use the function `knitr::kable()` on this table to have a nicely formatted table produced in the knitted output. 
 
@@ -45,7 +45,7 @@ Use `dplyr` functions to create a table with the number of candidates in each ty
 ## Answer 1
 
 ```{r}
-fb_ads <- read.csv("data/fb_ads.csv")
+fb_ads <- read_csv("data/fb_ads.csv")
 ```
 
 There are 7,041 political candidates in this data set. 
@@ -72,7 +72,7 @@ Use `knitr::kable()` to produce a nicely formatted table. In this call, set the 
 knitr::kable(my_table, col.names = c("Variable 1", "Variable 2", ...))
 ```
 
-In the writeup, describe which type of candidate sponsored the most promoting ads on average. 
+In the write-up, describe which type of candidate sponsored the most promoting ads on average. 
 
  **Rubric**: 3pts for creating `party_incumbent_promote` correctly (autograder); 2pt for a nicely formatted table (PDF); 1pt for changing the column names of the output table (PDF); 1pt for correctly identifying the type of candidate with highest average (PDF)
 
@@ -106,28 +106,24 @@ Create a histogram of this variable for just the US House races. Save the ggplot
  **Rubric:** 2pt for creating the new variable (autograder); 3pts for creating the histogram object (autograder); 2pts for answering the question about the histogram (PDF)
 
 ## Answer 3
-The new variable 'impressions_millions':
+
 ```{r}
 fb_ads <- fb_ads |>
   mutate(impressions_millions = impressions / 1000000)
-```
 
-The histogram of 'impressions_millions' for US House races: 
-```{r}
-plot_q3 <- ggplot(data = fb_ads,
+plot_q3 <- ggplot(data = fb_ads, filter(office == "US House"), 
                   mapping = aes(x = impressions_millions)) +
   geom_histogram(binwidth = 1, alpha = 0.7) + 
   labs(title = "Facebook Ad Impressions for US House Candidates", 
        x = "Facebook Ad Impressions (in millions)", 
        y = "Number of US House Candidates") +
-  facet_wrap(~ office == "US House") +
-  xlim(0, 20) +
-  ylim(0, 200)
+  xlim(0,100) +
+  ylim(0, 150)
 
 plot_q3
 ```
 
-This histogram is skewed to the left of 10 million, peaking at around 1.5 million and decreasing from there. Therefore, most House candidates did not have more than 10 million ad impressions on Facebook. 
+This histogram is skewed to the left of 10 million, peaking at around 3 million ad impressions and decreasing exponentially from there. Therefore, most House candidates did not have more than 10 million ad impressions on Facebook. 
 
 \newpage
 
@@ -158,17 +154,15 @@ top_cand <- fb_ads |>
                                   impressions_millions))
 
 fb_top_plot <- ggplot(top_cand, aes(x = impressions_millions, 
-                                    y = cand_name_last, 
-                                    fill = party)) +
-  geom_bar(stat = "identity") +
+                                    y = cand_name_last)) +
+  geom_bar(stat = "identity", aes (fill = party)) +
   labs(title = "Top 15 House Candidates Facebook Ad Impressions, 2017-2018", 
        x = "Facebook Ad Impressions (in millions)", 
-       y = "Candidate Last Name") +
+       y = "Candidate Last Name") + 
   scale_fill_manual(values = c(R = "red", D = "blue"))
 
 fb_top_plot
 ```
-
 \newpage
 
 # Code
